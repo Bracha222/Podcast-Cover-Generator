@@ -116,7 +116,7 @@ async function uploadFile(file) {
     const formData = new FormData();
     formData.append("audio", file);
 
-    const res = await fetch("http://localhost:4000/audio/upload", {
+    const res = await fetch("http://localhost:4000/api/audio/upload", {
       method: "POST",
       body: formData,
     });
@@ -125,7 +125,13 @@ async function uploadFile(file) {
       throw new Error(`Upload failed: ${res.status}`);
     }
 
-    const data = await res.json();
+   try{    const data = await res.json();
+    console.log('Upload response data:', data);
+}
+catch(err){console.error(err);
+    
+}
+console.log('Response received from upload endpoint');
     // Expected shape: { fileId, duration }
     uploadedFileId = data.fileId || data.id || null;
 
@@ -162,7 +168,7 @@ async function analyzeAudio() {
   analysisBody.hidden = true;
 
   try {
-    const res = await fetch("http://localhost:4000/audio/analyze", {
+    const res = await fetch("http://localhost:4000/api/audio/analyze", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ fileId: uploadedFileId }),
@@ -218,7 +224,7 @@ async function generateCovers() {
   renderCoversSkeleton();
 
   try {
-    const res = await fetch("http://localhost:4000/audio/generate-covers", {
+    const res = await fetch("http://localhost:4000/api/audio/generate-covers", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

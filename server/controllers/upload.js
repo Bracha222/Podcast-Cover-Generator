@@ -16,8 +16,10 @@ const storage = multer.diskStorage({
 const upload = multer({ storage }).single('audio'); // 'audio' זה שם השדה ב-HTML
 
 const uploadAudio = (req, res) => {
+  console.log('uploadAudio called');
   upload(req, res, (err) => {
     if (err) {
+      console.error('Error uploading file:', err);
       return res.status(500).json({ error: 'Error uploading file', details: err });
     }
     res.status(200).json({ message: 'File uploaded successfully', file: req.file });
