@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>Podcast Cover Generator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="app-header">
+      <div class="brand">
+        <div class="logo-circle">🎧</div>
+        <div class="brand-text">
+          <h1>Podcast Cover Generator</h1>
+          <p>יצירת קאברים מקצועיים לפודקאסט בעזרת Gemini 3</p>
+        </div>
+      </div>
+    </header>
+
+    <main class="app-main">
+      <!-- Stepper -->
+      <section class="stepper" aria-label="שלבי התהליך">
+        <div class="step active" data-step="1">
+          <span class="step-number">1</span>
+          <span class="step-label">העלאת אודיו</span>
+        </div>
+        <div class="step" data-step="2">
+          <span class="step-number">2</span>
+          <span class="step-label">ניתוח התוכן</span>
+        </div>
+        <div class="step" data-step="3">
+          <span class="step-number">3</span>
+          <span class="step-label">יצירת קאברים</span>
+        </div>
+      </section>
+
+      <!-- Layout -->
+      <section class="layout-grid">
+        <!-- Upload & controls -->
+        <section class="panel panel-main" id="upload-panel">
+          <header class="panel-header">
+            <h2>שלב 1: העלאת קובץ אודיו</h2>
+            <p>בחרי קובץ פודקאסט (MP3, WAV, M4A) בגודל עד 20MB.</p>
+          </header>
+
+          <div class="upload-zone" id="upload-zone">
+            <input type="file" id="audio-input" accept=".mp3,.wav,.m4a,audio/*" hidden />
+            <div class="upload-content">
+              <p class="upload-icon">⬆️</p>
+              <p class="upload-title">גררי קובץ לכאן</p>
+              <p class="upload-subtitle">או לחצי על הכפתור לבחירה מהמחשב</p>
+              <button type="button" class="btn primary" id="choose-file-btn">
+                בחרי קובץ
+              </button>
+              <p class="upload-hint">תמיכה בקבצים עד 20MB</p>
+            </div>
+          </div>
+
+          <div class="file-info" id="file-info" hidden>
+            <div class="file-info-main">
+              <span id="file-name"></span>
+              <span class="file-size" id="file-size"></span>
+            </div>
+            <div class="file-info-meta">
+              <span id="file-duration">משך זמן: —</span>
+            </div>
+          </div>
+
+          <div class="actions-row">
+            <button type="button" class="btn ghost" id="reset-btn">
+              איפוס
+            </button>
+            <div class="actions-group">
+              <button type="button" class="btn secondary" id="analyze-btn" disabled>
+                2. ניתוח האודיו
+              </button>
+              <button type="button" class="btn primary" id="generate-btn" disabled>
+                3. יצירת קאברים
+              </button>
+            </div>
+          </div>
+
+          <div class="status-line">
+            <span id="status-text">עוד לא הועלה קובץ.</span>
+            <span class="status-indicator" id="status-indicator"></span>
+          </div>
+        </section>
+
+        <!-- Analysis -->
+        <section class="panel" id="analysis-panel">
+          <header class="panel-header">
+            <h2>ניתוח הפודקאסט</h2>
+            <p>ברגע שהניתוח יסתיים, תופיע כאן תמצית התוכן והאווירה.</p>
+          </header>
+
+          <div class="analysis-placeholder" id="analysis-placeholder">
+            <p>עדיין אין ניתוח.</p>
+            <p class="muted">לחצי על "ניתוח האודיו" לאחר העלאת קובץ.</p>
+          </div>
+
+          <div class="analysis-body" id="analysis-body" hidden>
+            <div class="analysis-row">
+              <span class="analysis-label">נושא מרכזי</span>
+              <p class="analysis-value" id="analysis-topic"></p>
+            </div>
+            <div class="analysis-row">
+              <span class="analysis-label">מצב רוח</span>
+              <p class="analysis-value" id="analysis-mood"></p>
+            </div>
+            <div class="analysis-row">
+              <span class="analysis-label">ז'אנר</span>
+              <p class="analysis-value" id="analysis-genre"></p>
+            </div>
+            <div class="analysis-row">
+              <span class="analysis-label">קהל יעד</span>
+              <p class="analysis-value" id="analysis-audience"></p>
+            </div>
+            <div class="analysis-row">
+              <span class="analysis-label">מילות מפתח</span>
+              <p class="analysis-value" id="analysis-keywords"></p>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <!-- Covers gallery -->
+      <section class="panel covers-panel" id="covers-panel">
+        <header class="panel-header">
+          <h2>קאברים שנוצרו</h2>
+          <p>לאחר יצירה, תופיע כאן גלריה של 3–4 קאברים להורדה.</p>
+        </header>
+
+        <div class="covers-toolbar">
+          <div class="filters">
+            <label class="field">
+              <span class="field-label">סגנון מועדף</span>
+              <select id="style-select">
+                <option value="auto">אוטומטי לפי התוכן</option>
+                <option value="minimal">מינימליסטי ומקצועי</option>
+                <option value="colorful">צבעוני ואנרגטי</option>
+                <option value="artistic">אומנותי ויצירתי</option>
+              </select>
+            </label>
+          </div>
+          <div class="bulk-actions">
+            <button type="button" class="btn ghost" id="download-all-btn" disabled>
+              הורד הכל (.zip)
+            </button>
+          </div>
+        </div>
+
+        <div class="covers-grid" id="covers-grid">
+          <div class="empty-state">
+            <p>עדיין אין קאברים להצגה.</p>
+            <p class="muted">אחרי לחיצה על "יצירת קאברים" התמונות יופיעו כאן.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="app-footer">
+      <p>נבנה כפרויקט למידה – Podcast Cover Generator</p>
+    </footer>
+
+    <!-- Toast -->
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
