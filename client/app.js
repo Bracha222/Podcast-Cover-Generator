@@ -112,44 +112,37 @@ function handleFileSelected(file) {
 // Upload to backend
 
 async function uploadFile(file) {
-  try {
-    const formData = new FormData();
-    formData.append("audio", file);
+ try {
+  const res = await fetch("http://localhost:4000/api/audio/upload", {
+    method: "POST",
+    body: file,
+  });
 
-    const res = await fetch("http://localhost:4000/api/audio/upload", {
-      method: "POST",
-      body: formData,
-    });
-
-    if (!res.ok) {
-      throw new Error(`Upload failed: ${res.status}`);
-    }
-
-   try{    const data = await res.json();
-    console.log('Upload response data:', data);
-}
-catch(err){console.error(err);
-    
-}
-console.log('Response received from upload endpoint');
-    // Expected shape: { fileId, duration }
-    uploadedFileId = data.fileId || data.id || null;
-
-    if (data.duration) {
-      fileDurationEl.textContent = `משך זמן: ${data.duration} שניות`;
-    } else {
-      fileDurationEl.textContent = "משך זמן: לא זמין";
-    }
-
-    setStatus("הקובץ הועלה בהצלחה. אפשר לעבור לניתוח.", "ok");
-    analyzeBtn.disabled = false;
-    setStepActive(2);
-    showToast("הקובץ הועלה בהצלחה.");
-  } catch (err) {
-    console.error(err);
-    setStatus("שגיאה בהעלאת הקובץ. נסי שוב.", "error");
-    showToast("שגיאה בהעלאת הקובץ.");
+  if (!res.ok) {
+    throw new Error(`Upload failed: ${res.status}`);
   }
+
+  const data = await res.json();
+  console.log('Upload response data:', data);
+  console.log('Response received from upload endpoint');
+
+  uploadedFileId = data.fileId || data.id || null;
+
+  if (data.duration) {
+    fileDurationEl.textContent = `משך זמן: ${data.duration} שניות`;
+  } else {
+    fileDurationEl.textContent = "משך זמן: לא זמין";
+  }
+
+  setStatus("הקובץ הועלה בהצלחה. אפשר לעבור לניתוח.", "ok");
+  analyzeBtn.disabled = false;
+  setStepActive(2);
+  showToast("הקובץ הועלה בהצלחה.");
+} catch (err) {
+  console.error("Upload error:", err);
+  setStatus("שגיאה בהעלאת הקובץ. נסי שוב.", "error");
+  showToast("שגיאה בהעלאת הקובץ.");
+}
 }
 
 // Analyze
