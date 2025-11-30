@@ -1,6 +1,9 @@
-import { genAI } from '@google/genai';
+// services/generateCover.js
+import { GoogleGenAI } from '@google/genai';
 
-const analyzeAudioService = async (audioFileUrl) => {
+
+
+export const analyzeAudioService = async (audioFileUrl) => {
   try {
     const analysisPrompt = {
       audioFile: audioFileUrl, // URL של קובץ האודיו
@@ -13,11 +16,11 @@ const analyzeAudioService = async (audioFileUrl) => {
     };
 
     // שליחה ל-Google Gemini API
-    const analysis = await genAI.gen('gemini-3-pro-preview', analysisPrompt);
+    const analysis = await GoogleGenAI.gen('gemini-3-pro-preview', analysisPrompt);
     return analysis; // מחזיר את התוצאה
   } catch (err) {
     throw new Error('Error analyzing audio');
   }
 };
 
-export default analyzeAudioService;
+// export default analyzeAudioService;

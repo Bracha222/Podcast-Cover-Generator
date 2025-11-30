@@ -1,9 +1,8 @@
+// app.js (או serverApp.js – איך שקראת לזה)
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import audio from "./routes/audio.js";
-
-
 
 dotenv.config();
 
@@ -12,10 +11,11 @@ app.use(cors());
 app.use(express.json());
 
 app.use((req, res, next) => {
-	const now = new Date().toISOString();
-	console.log(`${now} -> ${req.method} ${req.originalUrl} - Content-Type: ${req.headers['content-type'] || ''}`);
-	next();
+  const now = new Date().toISOString();
+  console.log(`${now} -> ${req.method} ${req.originalUrl} - Content-Type: ${req.headers['content-type'] || ''}`);
+  next();
 });
-app.use("/api/audio/general", audio);
+
+app.use("/api/audio", audio);
 
 export default app;

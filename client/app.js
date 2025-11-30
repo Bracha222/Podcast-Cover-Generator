@@ -116,7 +116,7 @@ async function uploadFile(file) {
     const formData = new FormData();
     formData.append("audio", file);
 
-    const res = await fetch("/upload", {
+    const res = await fetch("http://localhost:4000/audio/upload", {
       method: "POST",
       body: formData,
     });
@@ -162,7 +162,7 @@ async function analyzeAudio() {
   analysisBody.hidden = true;
 
   try {
-    const res = await fetch("/analyze", {
+    const res = await fetch("http://localhost:4000/audio/analyze", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ fileId: uploadedFileId }),
@@ -218,7 +218,7 @@ async function generateCovers() {
   renderCoversSkeleton();
 
   try {
-    const res = await fetch("/generate-covers", {
+    const res = await fetch("http://localhost:4000/audio/generate-covers", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

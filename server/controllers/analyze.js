@@ -1,4 +1,4 @@
-import analyzeAudioService from '../services/analyzeAudio.js';
+import {analyzeAudioService} from '../services/analyze.js';
 
 const analyzeAudio = async (req, res) => {
   try {
